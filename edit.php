@@ -23,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $department = trim($_POST['department'] ?? '');
     $position = trim($_POST['position'] ?? '');
 
-    // Validation
     if (empty($full_name)) $errors[] = "Full Name is required.";
     if (empty($email)) $errors[] = "Email is required.";
     if (empty($department)) $errors[] = "Department is required.";

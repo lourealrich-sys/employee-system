@@ -1,12 +1,11 @@
 <?php
 require_once 'db.php';
 
-// Fetch all employees initially
 $stmt = $pdo->query("SELECT * FROM employees ORDER BY id ASC");
 $employees = $stmt->fetchAll();
+
 $totalRecords = count($employees);
 
-// Helper function to return unique Bootstrap badge classes per department
 function getDepartmentBadgeClass($dept) {
     return match($dept) {
         'Engineering' => 'bg-primary-subtle text-primary border-primary-subtle',
@@ -25,12 +24,10 @@ function getDepartmentBadgeClass($dept) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Records System</title>
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light min-vh-100 flex-column d-flex">
 
-    <!-- Header / Navbar -->
     <div class="bg-white border-bottom py-3 px-4 shadow-sm">
         <div class="container-fluid d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
             <div>
@@ -39,7 +36,6 @@ function getDepartmentBadgeClass($dept) {
             </div>
             
             <div class="d-flex gap-3 align-items-center">
-                <!-- Instant Search Bar -->
                 <div>
                     <input 
                         type="text" 
@@ -54,9 +50,8 @@ function getDepartmentBadgeClass($dept) {
         </div>
     </div>
 
-    <!-- Bootstrap Full-Width Table Container -->
-    <div class="container-fluid flex-grow-1 p-0 overflow-auto">
-        <table class="table table-hover align-middle mb-0 w-100" id="employeeTable">
+    <div class="container-fluid flex-grow-1 p-3 overflow-auto">
+        <table class="table table-hover align-middle mb-3 w-100" id="employeeTable">
             <thead class="table-light sticky-top">
                 <tr>
                     <th class="ps-4">#</th>
@@ -92,7 +87,6 @@ function getDepartmentBadgeClass($dept) {
                     </tr>
                 <?php endif; ?>
                 
-                <!-- Hidden dynamic row for empty search results -->
                 <tr id="noMatchRow" style="display: none;">
                     <td colspan="6" class="text-center py-4 text-muted">No matching employees found.</td>
                 </tr>
@@ -100,7 +94,6 @@ function getDepartmentBadgeClass($dept) {
         </table>
     </div>
 
-    <!-- JavaScript Instant Search Script -->
     <script>
         document.getElementById('searchInput').addEventListener('input', function() {
             const filter = this.value.toLowerCase().trim();
@@ -117,10 +110,8 @@ function getDepartmentBadgeClass($dept) {
                 }
             });
 
-            // Update record count text
             document.getElementById('recordCount').innerText = visibleCount;
 
-            // Show "No matching employees found" row if no rows match
             const noMatchRow = document.getElementById('noMatchRow');
             if (visibleCount === 0 && rows.length > 0) {
                 noMatchRow.style.display = '';

@@ -1,32 +1,31 @@
 <?php
 require_once 'db.php';
 
-$errors = [];
-$full_name = $email = $department = $position = '';
+$deptStmt = $pdo->query("SELECT * FROM departments ORDER BY dept_name ASC");
+$departments = $deptStmt->fetchAll();
 
-// Predefined list of departments for the dropdown
-$departments = ['Engineering', 'Product', 'Design', 'Sales', 'HR'];
+$errors = [];
+$full_name = $email = $department_id = $position = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $full_name = trim($_POST['full_name'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $department = trim($_POST['department'] ?? '');
-    $position = trim($_POST['position'] ?? '');
+    $full_name     = trim($_POST['full_name'] ?? '');
+    $email         = trim($_POST['email'] ?? '');
+    $department_id = trim($_POST['department_id'] ?? '');
+    $position      = trim($_POST['position'] ?? '');
 
-    // Validation checking
-    if (empty($full_name)) $errors[] = "Full Name is required.";
-    if (empty($email)) $errors[] = "Email is required.";
-    if (empty($department)) $errors[] = "Department is required.";
-    if (empty($position)) $errors[] = "Position is required.";
+    if (empty($full_name))     $errors[] = "Full Name is required.";
+    if (empty($email))         $errors[] = "Email is required.";
+    if (empty($department_id)) $errors[] = "Department is required.";
+    if (empty($position))      $errors[] = "Position is required.";
 
     if (empty($errors)) {
         try {
-            $stmt = $pdo->prepare("INSERT INTO employees (full_name, email, department, position) VALUES (:full_name, :email, :department, :position)");
+            $stmt = $pdo->prepare("INSERT INTO employees (full_name, email, department_id, position) VALUES (:full_name, :email, :department_id, :position)");
             $stmt->execute([
-                'full_name'  => $full_name,
-                'email'      => $email,
-                'department' => $department,
-                'position'   => $position
+                'full_name'     => $full_name,
+                'email'         => $email,
+                'department_id' => $department_id,
+                'position'      => $position
             ]);
             header("Location: index.php");
             exit;
@@ -70,20 +69,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label class="form-label">Email</label>
                         <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($email) ?>">
                     </div>
-                    
-                    <!-- Department Dropdown -->
                     <div class="mb-3">
                         <label class="form-label">Department</label>
-                        <select name="department" class="form-select">
+                        <select name="department_id" class="form-select">
                             <option value="">-- Select Department --</option>
                             <?php foreach ($departments as $dept): ?>
-                                <option value="<?= $dept ?>" <?= ($department === $dept) ? 'selected' : '' ?>>
-                                    <?= $dept ?>
+                                <option value="<?= $dept['id'] ?>" <?= ($department_id == $dept['id']) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($dept['dept_name']) ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
-
                     <div class="mb-3">
                         <label class="form-label">Position</label>
                         <input type="text" name="position" class="form-control" value="<?= htmlspecialchars($position) ?>">
